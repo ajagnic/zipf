@@ -2,26 +2,25 @@ package file
 
 import (
 	"bufio"
-	"fmt"
+	"log"
 	"math"
 	"os"
 	"strings"
-
-	"github.com/ajagnic/zipf/check"
 )
 
-func Process(path string) {
+func Process(path string) (ratiomap map[float64][]string) {
 	wordmap := scan(path)
 	normalize(wordmap)
-	fmt.Println(wordmap)
-	ratiomap := sort(wordmap)
-	fmt.Println(ratiomap)
+	ratiomap = sort(wordmap)
+	return
 }
 
 func scan(path string) (wordmap map[string]int) {
 	filep, err := os.Open(path)
 	defer filep.Close()
-	check.Fatal(err)
+	if err != nil {
+		log.Fatalf("\nFatalError: %v", err)
+	}
 	scannerp := bufio.NewScanner(filep)
 	scannerp.Split(bufio.ScanWords)
 	wordmap = make(map[string]int)
@@ -30,7 +29,9 @@ func scan(path string) (wordmap map[string]int) {
 		wordmap[word]++
 	}
 	err = scannerp.Err()
-	check.Fatal(err)
+	if err != nil {
+		log.Fatalf("\nFatalError: %v", err)
+	}
 	return
 }
 
@@ -45,11 +46,11 @@ func normalize(wordmap map[string]int) {
 }
 
 func sort(wordmap map[string]int) (ratiomap map[float64][]string) {
-	ratiomap = make(map[float64][]string)
 	total := 0.0
 	for _, val := range wordmap {
 		total += float64(val)
 	}
+	ratiomap = make(map[float64][]string)
 	for key, val := range wordmap {
 		ratio := (float64(val) / total) * 100
 		roundratio := math.Round(ratio*100) / 100

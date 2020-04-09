@@ -1,14 +1,22 @@
 package main
 
 import (
-	"os"
+	"flag"
+	"fmt"
 
+	"github.com/ajagnic/zipf/chart"
 	"github.com/ajagnic/zipf/file"
 )
 
+var filepath string
+
+func init() {
+	flag.StringVar(&filepath, "f", "", "Path for file to process")
+}
+
 func main() {
-	filepaths := os.Args[1:]
-	for _, path := range filepaths {
-		file.Process(path)
-	}
+	flag.Parse()
+	rmap := file.Process(filepath)
+	fmt.Println(rmap)
+	chart.Render(rmap)
 }
