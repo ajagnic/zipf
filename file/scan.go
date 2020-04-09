@@ -36,8 +36,7 @@ func scan(path string) (wordmap map[string]int) {
 
 func normalize(wordmap map[string]int) {
 	for key, val := range wordmap {
-		lowerkey := strings.ToLower(key)
-		newkey := strings.Trim(lowerkey, ";:,.?!()")
+		newkey := strings.Trim(strings.ToLower(key), ";:,.?!()")
 		if newkey != key {
 			wordmap[newkey] += val
 			delete(wordmap, key)
@@ -46,16 +45,15 @@ func normalize(wordmap map[string]int) {
 }
 
 func sort(wordmap map[string]int) (ratiomap map[float64][]string) {
-	total := 0.0
-	ratio := 0.0
 	ratiomap = make(map[float64][]string)
+	total := 0.0
 	for _, val := range wordmap {
 		total += float64(val)
 	}
 	for key, val := range wordmap {
-		ratio = (float64(val) / total) * 100
-		rounded := math.Round(ratio*100) / 100
-		ratiomap[rounded] = append(ratiomap[rounded], key)
+		ratio := (float64(val) / total) * 100
+		roundratio := math.Round(ratio*100) / 100
+		ratiomap[roundratio] = append(ratiomap[roundratio], key)
 	}
 	return
 }
