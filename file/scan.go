@@ -3,6 +3,7 @@ package file
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 	"strings"
 
@@ -13,6 +14,8 @@ func Process(path string) {
 	wordmap := scan(path)
 	normalize(wordmap)
 	fmt.Println(wordmap)
+	ratiomap := sort(wordmap)
+	fmt.Println(ratiomap)
 }
 
 func scan(path string) (wordmap map[string]int) {
@@ -40,4 +43,19 @@ func normalize(wordmap map[string]int) {
 			delete(wordmap, key)
 		}
 	}
+}
+
+func sort(wordmap map[string]int) (ratiomap map[float64][]string) {
+	total := 0.0
+	ratio := 0.0
+	ratiomap = make(map[float64][]string)
+	for _, val := range wordmap {
+		total += float64(val)
+	}
+	for key, val := range wordmap {
+		ratio = (float64(val) / total) * 100
+		rounded := math.Round(ratio*100) / 100
+		ratiomap[rounded] = append(ratiomap[rounded], key)
+	}
+	return
 }
