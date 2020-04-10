@@ -53,8 +53,8 @@ func sort(wordmap map[string]int) (ratiomap map[float64][]string) {
 	ratiomap = make(map[float64][]string)
 	for key, val := range wordmap {
 		ratio := (float64(val) / total) * 100
-		roundratio := math.Round(ratio*100) / 100
-		ratiomap[roundratio] = append(ratiomap[roundratio], key)
+		decimal := math.Round(ratio*100) / 100
+		ratiomap[decimal] = append(ratiomap[decimal], key)
 	}
 	return
 }
